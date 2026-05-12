@@ -1,0 +1,183 @@
+# Git Commands for Developers, DevOps, and Engineers
+
+This document provides a comprehensive list of essential Git commands along with their explanations.
+
+## Table of Contents
+- [Basic Repository Operations](#basic-repository-operations)
+- [Working with Changes](#working-with-changes)
+- [Branching and Merging](#branching-and-merging)
+- [Remote Repository Operations](#remote-repository-operations)
+- [History and Inspection](#history-and-inspection)
+- [Advanced Operations](#advanced-operations)
+- [DevOps and Collaboration](#devops-and-collaboration)
+- [Configuration and Maintenance](#configuration-and-maintenance)
+
+## Basic Repository Operations
+
+### git init
+Initializes a new Git repository in the current directory.
+
+### git clone <repository-url>
+Creates a local copy of a remote repository.
+
+### git status
+Shows the current state of the working directory and staging area.
+
+## Working with Changes
+
+### git add <file-or-directory>
+Stages changes for the next commit.
+
+### git add .
+Stages all changes in the current directory.
+
+### git commit -m "commit message"
+Records staged changes in the repository with a descriptive message.
+
+### git commit --amend
+Modifies the last commit (message or content).
+
+## Branching and Merging
+
+### git branch
+Lists all local branches.
+
+### git branch <branch-name>
+Creates a new branch.
+
+### git checkout <branch-name>
+Switches to the specified branch.
+
+### git checkout -b <branch-name>
+Creates and switches to a new branch.
+
+### git merge <branch-name>
+Merges the specified branch into the current branch.
+
+### git rebase <branch-name>
+Reapplies commits from current branch on top of another branch.
+
+### git rebase -i <commit>
+Interactive rebase to edit, squash, or reorder commits.
+
+## Remote Repository Operations
+
+### git remote -v
+Lists all remote repositories with their URLs.
+
+### git remote add <name> <url>
+Adds a new remote repository.
+
+### git push <remote> <branch>
+Uploads local commits to a remote repository.
+
+### git pull <remote> <branch>
+Downloads and merges changes from a remote repository.
+
+### git fetch <remote>
+Downloads changes from remote without merging.
+
+### git push --set-upstream <remote> <branch>
+Pushes a branch and sets it to track the remote branch.
+
+## History and Inspection
+
+### git log
+Shows commit history.
+
+### git log --oneline
+Shows a condensed commit history.
+
+### git log --graph --decorate
+Shows commit history with branch visualization.
+
+### git diff
+Shows differences between working directory and last commit.
+
+### git diff --staged
+Shows differences between staging area and last commit.
+
+### git diff <commit1> <commit2>
+Shows differences between two commits.
+
+### git show <commit>
+Shows details of a specific commit.
+
+## Advanced Operations
+
+### git stash
+Temporarily saves uncommitted changes.
+
+### git stash pop
+Restores the most recently stashed changes.
+
+### git reset --soft <commit>
+Resets to a commit but keeps changes staged.
+
+### git reset --mixed <commit>
+Resets to a commit and unstages changes (default).
+
+### git reset --hard <commit>
+Resets to a commit and discards all changes.
+
+### git revert <commit>
+Creates a new commit that undoes changes from a previous commit.
+
+### git cherry-pick <commit>
+Applies changes from a specific commit to current branch.
+
+### git bisect
+Binary search through commit history to find bug-introducing commit.
+
+## DevOps and Collaboration
+
+### git tag <tag-name>
+Creates a lightweight tag pointing to current commit.
+
+### git tag -a <tag-name> -m "message"
+Creates an annotated tag with a message.
+
+### git submodule add <url> <path>
+Adds a submodule to the repository.
+
+### git submodule update --init --recursive
+Initializes and updates all submodules.
+
+### git blame <file>
+Shows who last modified each line of a file.
+
+### git reflog
+Shows a log of all reference updates.
+
+## Configuration and Maintenance
+
+### git config --global user.name "Your Name"
+Sets the global username for commits.
+
+### git config --global user.email "your.email@example.com"
+Sets the global email for commits.
+
+### git config --list
+Shows all Git configuration settings.
+
+### git gc
+Cleans up unnecessary files and optimizes the repository.
+
+### git fsck
+Verifies the integrity of the Git repository.
+
+### git clean -fd
+Removes untracked files and directories.
+
+## Best Practices and Tips
+
+1. Commit Often: Make small, frequent commits with clear messages.
+2. Use Branches: Develop features in separate branches.
+3. Pull Regularly: Keep your local repository up-to-date.
+4. Review Before Push: Use `git diff` and `git log` to review changes.
+5. Use Meaningful Messages: Write descriptive commit messages.
+6. Learn Rebase: Use interactive rebase for clean history.
+7. Backup Remotes: Always have remote backups of your work.
+8. Use .gitignore: Exclude unnecessary files from version control.
+
+This comprehensive guide covers the most essential Git commands that developers, DevOps engineers, and software engineers encounter in their daily work.

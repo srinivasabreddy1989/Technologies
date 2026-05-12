@@ -1,0 +1,228 @@
+# Git Installation and Configuration Guide
+
+This guide provides step-by-step instructions for installing and configuring Git on various platforms, along with essential configurations for software engineers.
+
+## Installation
+
+### Windows
+
+#### Option 1: Git for Windows (Recommended)
+1. Download the latest Git for Windows installer from https://gitforwindows.org/
+2. Run the installer and follow the setup wizard
+3. Choose components:
+   - Git Bash
+   - Git GUI
+   - Git LFS
+   - Associate .git* files
+   - Associate .sh files
+4. Choose default editor (VS Code recommended)
+5. Adjust PATH environment: "Git from the command line and also from 3rd-party software"
+6. Choose HTTPS transport backend: "Use the OpenSSL library"
+7. Configure line ending conversions: "Checkout Windows-style, commit Unix-style line endings"
+8. Configure terminal emulator: "Use Windows' default console window"
+9. Configure extra options: Enable file system caching, Enable Git Credential Manager
+
+#### Option 2: Chocolatey
+```powershell
+choco install git
+```
+
+#### Option 3: Winget
+```powershell
+winget install --id Git.Git -e --source winget
+```
+
+### Linux
+
+#### Ubuntu/Debian
+```bash
+sudo apt update
+sudo apt install git
+```
+
+#### CentOS/RHEL/Fedora
+```bash
+# CentOS/RHEL
+sudo yum install git  # or dnf install git for newer versions
+
+# Fedora
+sudo dnf install git
+```
+
+#### Arch Linux
+```bash
+sudo pacman -S git
+```
+
+### macOS
+
+#### Option 1: Xcode Command Line Tools
+```bash
+xcode-select --install
+```
+
+#### Option 2: Homebrew
+```bash
+brew install git
+```
+
+#### Option 3: MacPorts
+```bash
+sudo port install git
+```
+
+
+
+## Basic Configuration
+
+### Global User Configuration
+Set your name and email (required for commits):
+```bash
+git config --global user.name "Your Full Name"
+git config --global user.email "your.email@example.com"
+```
+
+### Check Configuration
+```bash
+git config --list
+git config --global --list
+```
+
+### Default Editor
+Set your preferred editor:
+```bash
+# VS Code
+git config --global core.editor "code --wait"
+
+# Vim
+git config --global core.editor vim
+
+# Nano
+git config --global core.editor nano
+
+# Sublime Text
+git config --global core.editor "subl -n -w"
+```
+
+### Default Branch Name
+Set default branch to 'main' (modern standard):
+```bash
+git config --global init.defaultBranch main
+```
+
+### Line Endings
+Configure line ending handling:
+```bash
+# Windows
+git config --global core.autocrlf true
+
+# Linux/macOS
+git config --global core.autocrlf input
+
+# Disable (not recommended)
+git config --global core.autocrlf false
+```
+
+
+### Diff and Merge Tools
+
+#### Diff Tool (VS Code)
+```bash
+git config --global diff.tool vscode
+git config --global difftool.vscode.cmd 'code --wait --diff $LOCAL $REMOTE'
+```
+
+#### Merge Tool (VS Code)
+```bash
+git config --global merge.tool vscode
+git config --global mergetool.vscode.cmd 'code --wait $MERGED'
+```
+
+#### Diff Tool (Meld)
+```bash
+git config --global diff.tool meld
+git config --global difftool.meld.cmd 'meld "$LOCAL" "$REMOTE"'
+```
+
+### Credential Helper
+Store credentials securely:
+```bash
+# Windows
+git config --global credential.helper manager-core
+
+# macOS
+git config --global credential.helper osxkeychain
+
+# Linux
+git config --global credential.helper store
+# OR for more security
+sudo apt install libsecret-1-0 libsecret-1-dev
+cd /usr/share/doc/git/contrib/credential/libsecret
+sudo make
+git config --global credential.helper /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+```
+
+## SSH Configuration
+
+### Generate SSH Key
+```bash
+ssh-keygen -t ed25519 -C "your.email@example.com"
+# OR for older systems
+ssh-keygen -t rsa -b 4096 -C "your.email@example.com"
+```
+
+### Configure SSH for Git
+```bash
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+```
+
+
+### Check Git Version
+```bash
+git --version
+```
+
+### Update Git
+```bash
+# Windows: Download and install latest version
+
+# Linux
+sudo apt update && sudo apt upgrade git
+
+# macOS (Homebrew)
+brew upgrade git
+```
+
+### Clear Credentials
+```bash
+git config --global --unset credential.helper
+```
+
+### Reset Configuration
+```bash
+# Remove all global config
+rm ~/.gitconfig
+
+# Remove local config
+rm .git/config
+```
+
+
+## Platform-Specific Notes
+
+### Windows
+- Use Git Bash for Unix-like commands
+- Consider using Windows Terminal for better experience
+- Be aware of line ending differences
+
+### Linux
+- Git is usually pre-installed on most distributions
+- Use package managers for easy updates
+- SSH keys work seamlessly
+
+### macOS
+- Xcode Command Line Tools include Git
+- Homebrew provides latest versions
+- SSH keys integrate well with Keychain
+
+This guide covers the essential installation and configuration steps that every software engineer should know when working with Git.

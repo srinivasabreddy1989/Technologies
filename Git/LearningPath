@@ -1,0 +1,137 @@
+1. Git Fundamentals (Must be crystal clear)
+
+    If this is weak, everything breaks later.
+
+    Core concepts
+    What is Git (distributed VCS vs centralized)
+    Working Directory vs Staging Area vs Repository
+    Commits and snapshots (not file differences)
+    Commands you MUST master
+    git init
+    git clone
+    git add
+    git commit
+    git status
+    git log
+    git diff
+
+    👉 Understand:
+
+        What happens internally when you run git add and commit
+        How Git tracks changes (hashes, blobs, trees)
+2. Branching & Merging (Very Important for real work)
+Concepts
+    Branch = pointer to commit
+    HEAD
+    Fast-forward vs 3-way merge
+Commands
+    git branch
+    git checkout / git switch
+    git merge
+Must understand
+    Merge conflicts (how they happen + resolution)
+    Feature branching workflow
+3. Remote Repositories (Team collaboration)
+Concepts
+    Origin
+    Upstream/downstream
+    Fetch vs Pull
+Commands
+    git remote
+    git fetch
+    git pull
+    git push
+
+👉 Learn difference:
+
+    git pull = fetch + merge
+    When to use fetch vs pull
+4. Rebasing (Advanced but VERY important)
+Commands
+    git rebase
+    git rebase -i (interactive)
+Must understand
+    Rebase vs Merge (very common interview question)
+    Clean commit history
+    Squashing commits
+
+⚠️ Rule:
+    Never rebase public/shared branches
+5. Git Internals (This makes you expert level)
+    Concepts
+    SHA-1 hashes
+    Objects:
+        Blob
+        Tree
+        Commit
+    .git folder structure
+
+👉 Learn:
+    How commits are stored
+    How branches are just pointers
+6. Undoing & Fixing Mistakes (Real-world critical)
+Commands you MUST know deeply
+    git reset (soft, mixed, hard)
+    git revert
+    git checkout -- <file>
+    git restore
+
+👉 Difference:
+    Reset = rewrite history
+    Revert = safe undo (new commit)
+7. Stashing & Temporary Work
+    git stash
+    git stash pop
+    git stash list
+
+Use case:
+    Switching branches without committing
+8. Cleaning & Maintenance
+    git clean
+    git gc
+    .gitignore
+9. Tags & Releases
+    git tag
+    Annotated vs lightweight tags
+
+Used in:
+    Production releases (v1.0, v2.0)
+
+10. Advanced Workflows (Industry Level)
+Learn these workflows:
+    Git Flow
+    GitHub Flow
+    Trunk-based development
+
+👉 Understand:
+    Feature branches
+    Release branches
+    Hotfix branches
+11. Git in DevOps (Very important for YOU)
+
+Since you're into DevOps, focus here 👇
+
+CI/CD Integration
+    Git with Jenkins pipelines
+    Webhooks
+    Auto build on push
+Tools you should know
+    GitHub
+    GitLab
+    Bitbucket
+Concepts
+    Pull Requests (PR)
+    Code reviews
+    Branch protection rules
+12. Advanced Expert-Level Topics
+Must learn if you want mastery:
+    Cherry-pick (git cherry-pick)
+    Bisect (git bisect) → debugging tool
+    Submodules
+    Monorepo strategies
+    Large file handling (Git LFS)
+    Hooks (pre-commit, pre-push)
+13. Debugging & Troubleshooting
+    Fix merge conflicts like a pro
+    Recover deleted commits (git reflog)
+    Fix broken repo
