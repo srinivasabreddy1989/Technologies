@@ -1,0 +1,234 @@
+trigger:
+- main
+
+variables:
+  imageName: java-app
+  acrName: myacr.azurecr.io
+  tag: $(Build.BuildId)
+
+stages:
+
+# =========================================================
+# BUILD STAGE
+# =========================================================
+- stage: Build
+  displayName: Build and Test
+
+  jobs:
+  - job: MavenBuild
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+
+    # Checkout code
+    - checkout: self
+
+    # Install Java
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: '17'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
+
+    # Maven Build
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        goals: 'clean install'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+
+# =========================================================
+# SAST STAGE
+# =========================================================
+- stage: SAST
+  displayName: Static Code Analysis
+
+  dependsOn: Build
+
+  jobs:
+  - job: SonarQubeScan
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+
+    - checkout: self
+
+    # Prepare SonarQube
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'SonarQube-Service'
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: 'java-app'
+        cliProjectName: 'java-app'
+
+    # Run Analysis
+    - task: SonarQubeAnalyze@5
+
+    # Publish Results
+    - task: SonarQubePublish@5
+      inputs:
+        pollingTimeoutSec: '300'
+
+# =========================================================
+# SCA STAGE
+# =========================================================
+- stage: SCA
+  displayName: Dependency Security Scan
+
+  dependsOn: SAST
+
+  jobs:
+  - job: DependencyCheck
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+
+    - checkout: self
+
+    # OWASP Dependency Check
+    - script: |
+        docker run --rm \
+        -v $(System.DefaultWorkingDirectory):/src \
+        owasp/dependency-check \
+        --scan /src \
+        --format HTML \
+        --out /src/reports
+      displayName: Run OWASP Dependency Check
+
+# =========================================================
+# DOCKER BUILD
+# =========================================================
+- stage: DockerBuild
+
+  displayName: Build Docker Image
+
+  dependsOn: SCA
+
+  jobs:
+  - job: DockerImage
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+
+    - checkout: self
+
+    # Login to ACR
+    - task: Docker@2
+      inputs:
+        command: login
+        containerRegistry: 'ACR-ServiceConnection'
+
+    # Build Image
+    - task: Docker@2
+      inputs:
+        command: build
+        Dockerfile: '**/Dockerfile'
+        repository: $(imageName)
+        tags: |
+          $(tag)
+
+    # Push Image
+    - task: Docker@2
+      inputs:
+        command: push
+        repository: $(imageName)
+        containerRegistry: 'ACR-ServiceConnection'
+        tags: |
+          $(tag)
+
+# =========================================================
+# DEV DEPLOYMENT
+# =========================================================
+- stage: DeployDev
+
+  displayName: Deploy to Dev AKS
+
+  dependsOn: DockerBuild
+
+  jobs:
+  - deployment: DeployToDev
+
+    environment: dev
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+
+          - task: KubernetesManifest@1
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'AKS-ServiceConnection'
+              namespace: dev
+              manifests: |
+                k8s/deployment.yaml
+                k8s/service.yaml
+              containers: |
+                $(acrName)/$(imageName):$(tag)
+
+# =========================================================
+# DAST STAGE
+# =========================================================
+- stage: DAST
+
+  displayName: Dynamic Security Scan
+
+  dependsOn: DeployDev
+
+  jobs:
+  - job: OWASPZAP
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+
+    # Run OWASP ZAP Scan
+    - script: |
+        docker run -t owasp/zap2docker-stable zap-baseline.py \
+        -t http://dev.myapp.com
+      displayName: Run OWASP ZAP
+
+# =========================================================
+# PRODUCTION DEPLOYMENT
+# =========================================================
+- stage: DeployProd
+
+  displayName: Deploy to Production
+
+  dependsOn: DAST
+
+  condition: succeeded()
+
+  jobs:
+  - deployment: DeployToProd
+
+    environment: production
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+
+          - task: KubernetesManifest@1
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: 'AKS-Prod-ServiceConnection'
+              namespace: production
+              manifests: |
+                k8s/deployment.yaml
+                k8s/service.yaml
+              containers: |
+                $(acrName)/$(imageName):$(tag)
